@@ -10,7 +10,7 @@ class LLMInitializer:
     def init_ollama_model(
         self, 
         model: str = "deepseek-r1:7b",
-        base_url: str = "http://localhost:11434",
+        base_url: str = "http://0.0.0.0:11434",
         **kwargs
     ) -> OllamaLLM:
         """初始化OllamaLLM模型

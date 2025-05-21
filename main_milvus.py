@@ -50,17 +50,22 @@ async def lifespan(app: FastAPI):
         logging.info("開始初始化服務...")
         
         # 加載環境變數
-        load_dotenv()
-        encoding_model_name = os.getenv("EMBEDDEDING_MODEL")
-        encoding_model_path = os.getenv("EMBEDDEDING_MODEL_PATH")
+        # load_dotenv()
+        # encoding_model_name = os.getenv("EMBEDDEDING_MODEL")
+        # encoding_model_path = os.getenv("EMBEDDEDING_MODEL_PATH")
+        # logging.info(f"Encoding model: {encoding_model_name}");
+        # logging.info(f"Encoding model path: {encoding_model_path}");
+        # LLM_MODEL='deepseek-r1:7b'#'phi4:latest';
+        
+        # 初始化內部資料
         retrieval_num = 10;
-        LLM_MODEL='deepseek-r1:7b'#'phi4:latest';
-        logging.info(f"Encoding model: {encoding_model_name}");
-        logging.info(f"Encoding model path: {encoding_model_path}");
-
+        
         logging.info("初始化內部資料...")
+        
         _dbName="dqe_kb_db"
+       
         _collectionName='qualityQA'
+        
         keys_order = [
             "problemtype",
             "module",
@@ -70,17 +75,25 @@ async def lifespan(app: FastAPI):
             "improve",
             "experience"
         ]
+        
         headers = ["问题瞭型","模块", "严重度(A/B/C)", "问题现象描述", "原因分析", "改善对策", "经验萃取"]
+      
         _outputfields = ["problemtype", "module", "severity", "causeAnalysis", "description", "improve", "experience"]
+        
         # 初始化milvus client object
-        _embedding_path = encoding_model_path#"/home/mapleleaf/LCJRepos/Embedding_Models/jina-embeddings-v2-base-zh"
+        _embedding_path = "/home/qingcloud/models/jina-embeddings-v2-base-zh"
+        
         logging.info(f"encoding_model_path is {_embedding_path}")
+        
         milvus_qry = MilvusQuery(database=_dbName,embedding_model_path=_embedding_path)
+        
         milvus_qry.load_collection(collection_name=_collectionName)
+        
         logging.info("完成MilvusQuery物件初始化")
         
         # 初始化 LLM 模型
         llm = LLMInitializer().init_ollama_model()
+        
         logging.info("llm 初始化成功")
 
         logging.info("Maple-Leaf AI KB 服務初始化完成")

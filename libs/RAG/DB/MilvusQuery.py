@@ -3,9 +3,11 @@ import sys
 import os
 # sys.path.append(os.path.abspath('../'))
 from .DatabaseQuery import DatabaseQuery
+
 from pymilvus import MilvusClient
 from pymilvus.client.types import LoadState
-from pymilvus.model.dense import SentenceTransformerEmbeddingFunction
+# from pymilvus.model import DefaultEmbeddingFunction
+from pymilvus import model
 from typing import List, Any, Dict
 import polars as pl
 import logging
@@ -29,7 +31,7 @@ logging.basicConfig(
 
 # Milvus 查詢類別
 class MilvusQuery(DatabaseQuery):
-    def __init__(self, uri="http://localhost:19530", token="root:Milvus", database:str=None, collection:str=None, embedding_model_path:str=None):
+    def __init__(self, uri="http://172.16.2.193:19530", token="root:Milvus", database:str=None, collection:str=None, embedding_model_path:str=None):
         self.client = MilvusClient(uri=uri, token=token)
         self.client.use_database(db_name=database)
         self.used_db = database
@@ -37,7 +39,7 @@ class MilvusQuery(DatabaseQuery):
         self.embedding_model="jina-embeddings-v2-base-zh"
         self.embedding_model_path=embedding_model_path#"../../../Embedding_Models/jina-embeddings-v2-base-zh"
         print(f"embedding path:{embedding_model_path} in MilvusQuery")
-        self.ef=SentenceTransformerEmbeddingFunction(self.embedding_model_path, trust_remote_code=True)
+        self.ef=model.dense.SentenceTransformerEmbeddingFunction(self.embedding_model_path, trust_remote_code=True)
 
     def create_collection(self, collection_name, dimension, schema=None):
         if self.client.has_collection(collection_name=collection_name):
