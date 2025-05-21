@@ -1,4 +1,5 @@
 from typing import List, Dict
+import re
 
 class ContentProcessor:
     def __init__(self):
